@@ -3,7 +3,7 @@
     <div>
       <h1>// @TODO</h1>
       <ul>
-        <li :key="item.id" v-for="item in $store.getters.items">
+        <li :key="item.id" v-for="item in getItems">
           <input type="checkbox" value="true" v-model="item.isComplete">
           {{item.name}}
         </li>
@@ -17,7 +17,7 @@
         type="radio"
         value="incompleted"
         v-model="tasksType"
-        @change="filterTasks"
+        @change="filterTasks(tasksType)"
       >
       <label for="uncompleted">uncompleted</label>
       <input
@@ -26,16 +26,25 @@
         type="radio"
         value="completed"
         v-model="tasksType"
-        @change="filterTasks"
+        @change="filterTasks(tasksType)"
       >
       <label for="completed">completed</label>
-      <input id="all" name="all" type="radio" value="all" v-model="tasksType" @change="filterTasks">
+      <input
+        id="all"
+        name="all"
+        type="radio"
+        value="all"
+        v-model="tasksType"
+        @change="filterTasks(tasksType)"
+      >
       <label for="all">All labels</label>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
+
 export default {
   name: "TodoListItems",
   data: function() {
@@ -43,10 +52,7 @@ export default {
       tasksType: "all"
     };
   },
-  methods: {
-    filterTasks: function() {
-      this.$store.dispatch("filterTasks", this.tasksType);
-    }
-  }
+  methods: mapActions(["filterTasks"]),
+  computed: mapGetters(["getItems"])
 };
 </script>

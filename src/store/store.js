@@ -15,12 +15,17 @@ export const mutations = {
 
 export const actions = {
   filterTasks: ({ commit }, payload) => commit("FILTER_TASKS", payload),
-  addTodoTask: ({ commit }, payload) => commit("ADD_TODO_TASK", payload)
+  addTodoTask: ({ commit }, payload) =>
+    commit("ADD_TODO_TASK", {
+      name: payload,
+      isComplete: false,
+      id: state.items.length + 1
+    })
 };
 
 export const getters = {
   showTasks: state => state.showTasks,
-  items: state => {
+  getItems: state => {
     if (state.showTasks !== "all") {
       const FILTER_TASKS = state.showTasks === "completed" ? true : false;
       return state.items.filter(item => item.isComplete === FILTER_TASKS);

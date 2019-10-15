@@ -12,6 +12,8 @@
   "dependencies": {
     "@vue/test-utils": "1.0.0-beta.25",
     "vue": "^2.4.4",
+    "vue-server-renderer": "2.6.10",
+    "vue-template-compiler": "2.6.10",
     "vue-test-utils": "1.0.0-beta.11",
     "vuex": "3.1.1"
   },

@@ -3,12 +3,14 @@
     <form>
       <label for="description">Activity</label>
       <input id="description" name="description" type="text" v-model="description">
-      <button type="submit" @click.prevent="addTodoListItem">Add</button>
+      <button type="submit" @click.prevent="addTodoTask(description)">Add</button>
     </form>
   </div>
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   name: "TodoListAdd",
   data: function() {
@@ -16,19 +18,6 @@ export default {
       description: ""
     };
   },
-  methods: {
-    addTodoListItem: function() {
-      const temporaryList = this.$store.state.items;
-      const UUID = temporaryList.length + 1;
-
-      this.$store.dispatch("addTodoTask", {
-        name: this.description,
-        id: UUID,
-        isComplete: false
-      });
-
-      this.description = "";
-    }
-  }
+  methods: mapActions(["addTodoTask"])
 };
 </script>

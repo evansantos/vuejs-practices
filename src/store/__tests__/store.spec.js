@@ -1,4 +1,4 @@
-/* global describe, it, expect, beforeAll, beforeEach, spyOn */
+/* global describe, it, expect, beforeAll, beforeEach, afterEach, jest, spyOn */
 import { mutations, actions, getters } from "@/store/store";
 
 describe("Store testing", () => {
@@ -22,7 +22,7 @@ describe("Store testing", () => {
           isComplete: false
         };
 
-        await mutations.ADD_TODO_TASK(state, payload);
+        mutations.ADD_TODO_TASK(state, payload);
         expect(state.items).toEqual([payload]);
       });
     });
@@ -79,17 +79,64 @@ describe("Store testing", () => {
     });
   });
 
-  // describe("Actions", () => {
-  //   describe("Filter tasks", () => {
-  //     it("Filter All tasks", async () => {
-  //       const commit = spyOn(actions, "filterTasks");
-  //       const payload = "all";
+  describe("Actions", () => {
+    describe("Filter tasks", () => {
+      let mockedFn;
+      let spy;
+      let payload;
+      beforeEach(() => {
+        mockedFn = jest.fn();
+        spy = jest.spyOn(actions, "filterTasks");
+      });
 
-  //       actions.filterTasks({ commit }, payload);
-  //       expect(commit).toHaveBeenCalled();
-  //     });
-  //   });
-  // });
+      afterEach(() => {
+        spy.mockRestore();
+      });
+
+      it("Filter All tasks", async () => {
+        payload = "all";
+
+        actions.filterTasks({ commit: mockedFn }, payload);
+        expect(spy).toHaveBeenCalled();
+        expect(spy).toHaveBeenCalledTimes(1);
+      });
+
+      it("Filter All completed tasks", async () => {
+        payload = "completed";
+
+        actions.filterTasks({ commit: mockedFn }, payload);
+        expect(spy).toHaveBeenCalled();
+        expect(spy).toHaveBeenCalledTimes(1);
+      });
+
+      it("Filter All incompleted tasks", async () => {
+        payload = "incompleted";
+
+        actions.filterTasks({ commit: mockedFn }, payload);
+        expect(spy).toHaveBeenCalled();
+        expect(spy).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe("add Todo to Task list", () => {
+      it("add task", async () => {
+        const mockedFn = jest.fn();
+        const spy = jest.spyOn(actions, "addTodoTask");
+
+        const payload = {
+          name: "Hello world!",
+          id: 1,
+          isComplete: false
+        };
+
+        actions.addTodoTask({ commit: mockedFn }, payload);
+        expect(spy).toHaveBeenCalled();
+        expect(spy).toHaveBeenCalledTimes(1);
+
+        spy.mockRestore();
+      });
+    });
+  });
 
   describe("Getters", () => {
     let state;
@@ -127,20 +174,22 @@ describe("Store testing", () => {
     });
 
     it("get all items", () => {
-      const result = getters.items(state);
-      expect(result).toHaveLength(4);
-      expect(result).toEqual(state);
+      const result = getters.getItems(state);
+      expect(result).toHaveLength(state.items.length);
     });
 
     it("get only completed tasks", () => {
       state.showTasks = "complete";
-      const result = getters.items(state);
-      const filteredState = {
-        ...state,
-        items: state.items.filter(item => item.isComplete === true)
-      };
-      expect(result).toHaveLength(2);
-      expect(result).toEqual(filteredState);
+      const result = getters.getItems(state);
+      const filteredState = state.items.filter(item => item.isComplete);
+      expect(result).toHaveLength(filteredState.length);
+    });
+
+    it("get only incompleted tasks", () => {
+      state.showTasks = "incomplete";
+      const result = getters.getItems(state);
+      const filteredState = state.items.filter(item => !item.isComplete);
+      expect(result).toHaveLength(filteredState.length);
     });
   });
 });
