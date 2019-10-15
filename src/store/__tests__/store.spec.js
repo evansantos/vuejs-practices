@@ -175,12 +175,14 @@ describe("Store testing", () => {
 
     it("get all items", () => {
       const result = getters.getItems(state);
+
       expect(result).toHaveLength(state.items.length);
     });
 
     it("get only completed tasks", () => {
       state.showTasks = "complete";
       const result = getters.getItems(state);
+
       const filteredState = state.items.filter(item => item.isComplete);
       expect(result).toHaveLength(filteredState.length);
     });
@@ -188,6 +190,7 @@ describe("Store testing", () => {
     it("get only incompleted tasks", () => {
       state.showTasks = "incomplete";
       const result = getters.getItems(state);
+
       const filteredState = state.items.filter(item => !item.isComplete);
       expect(result).toHaveLength(filteredState.length);
     });
